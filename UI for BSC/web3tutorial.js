@@ -8,8 +8,9 @@ window.addEventListener('DOMContentLoaded', function() {
       window.web3 = new Web3(window.BinanceChain);
       window.BinanceChain.enable();
 
-      BinanceChain
-        .request({ method: 'eth_accounts' })
+
+
+      BinanceChain.request({ method: 'eth_accounts' })
         .then(handleAccountsChanged)
         .catch((err) => {
           // Some unexpected error.
@@ -53,30 +54,43 @@ window.addEventListener('DOMContentLoaded', function() {
 function writeMessage(){
   var input = $('#messageInput').val();
   theContract.methods.writeMessage(input)
-  .send({ from: currentAccount, gas: 3000000, gasPrice: 30*1000000000, value:100000000000000000 })
+  .send({ from: currentAccount, gas: 3000000, gasPrice: 30*1000000000, value:100000000000000000 }, function(error, transactionHash){
+        console.log("Txn sent. Please wait for confirmation.");
+        $('#myBtn').hide();
+        $('#loader').show();
+        console.log(transactionHash);
 
-  .on('transactionHash', function (txHash) {
-    console.log("Txn sent. Please wait for confirmation.");
-    $('#myBtn').hide();
-    $('#loader').show();
-    console.log(txHash);
-  })
-  .once('confirmation', function(confNumber, receipt){
-    console.log(receipt.status);
-    if(receipt.status == true){
+         setTimeout(()=>{
+          web3.eth.getTransactionReceipt(transactionHash, (err, receipt) => {
 
-      $('#loader').hide();
-      $('#myBtn').show();
-      console.log("Txn successful: "+receipt.status);
-      //grab message from event
-      var message = receipt.events.messageWrite.returnValues['_text'];
-      console.log(`new message is: ${message}`);
-      $('#message').html(message);
-    }
-    else{
-      console.log("there was an error");
-    }
-  }).once('error', function(error){console.log(error);});
+
+           if(receipt.status == true){
+              $('#loader').hide();
+              $('#myBtn').show();
+              var inputs = [{ indexed: false,name: "_text", type: "string"}]
+
+              web3.eth.getTransactionReceipt(transactionHash, (err, receipt) => {
+              console.log('status ',receipt);
+                    //var message = receipt.events.messageWrite.returnValues['_text'];
+               var message = web3.eth.abi.decodeLog(inputs,receipt.logs[0].data,receipt.logs[0].topics)['_text']
+
+               console.log("message: ", message)
+
+               $('#message').html(message);
+              })
+
+
+            }else{
+              console.log('status ',receipt.status);
+
+            }
+
+              });
+          }, 5000)
+
+
+   });
+
 }
 
 //read
