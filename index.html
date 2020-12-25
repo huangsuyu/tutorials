@@ -33,7 +33,7 @@
     <main role="main" class="inner cover">
       <h1 id="message" class="cover-heading"></h1>
       <p class="lead">This dapp allows someone to write a message that is displayed to everyone who is connected. It is free to view, but costs a small fee of 0.1 BNB to write a new message</p>
-      
+
       <form>
         <div class="form-group">
           <input type="text" class="form-control" id="messageInput" placeholder="your message">
@@ -41,7 +41,6 @@
       </form>
 
     <button id="myBtn" onclick="writeMessage();" type="submit" class="btn btn-primary">Submit to blockchain</button>
-    
     <span id="result">
       <img id="loader" src="peanut.gif">
     </span>
@@ -55,7 +54,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
 
 <!-- blockchain stuff -->
-<script src="w3_b.js"></script>
+<script type="text/javascript" src="./web3.min.js"></script>
 <script src="theContractABI.js"></script>
 <script src="web3tutorial.js"></script>
 
